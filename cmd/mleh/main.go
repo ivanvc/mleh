@@ -53,7 +53,6 @@ func main() {
 	if len(flag.Args()) < 1 {
 		log.Fatal("Input directory not specified")
 	}
-
 	inputDir := flag.Arg(0) + "/"
 	ti := new(TemplateInput)
 	dat, err := ioutil.ReadFile(filepath.Join(inputDir, "values.yaml"))
