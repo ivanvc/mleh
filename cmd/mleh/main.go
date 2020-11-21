@@ -3,13 +3,13 @@ package main
 import (
 	"flag"
 	"io/ioutil"
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
 	"text/template"
 
 	"github.com/Masterminds/sprig/v3"
+	log "github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v2"
 )
 
@@ -32,12 +32,21 @@ var (
 	valuesFile = flag.String("values", "", "The values.yaml file")
 	outputDir  = flag.String("output-dir", "", "The output directory")
 	dryMode    = flag.Bool("dry", false, "Run in dry mode")
+	silent     = flag.Bool("silent", false, "Prints only Error level logs or higher")
 	values     valuesFlag
 )
 
 func init() {
 	flag.Var(&values, "value", "Options to be used as values, as key=value where value is in YAML format")
 	flag.Parse()
+
+	formatter := &log.TextFormatter{
+		FullTimestamp: true,
+	}
+	log.SetFormatter(formatter)
+	if *silent {
+		log.SetLevel(log.ErrorLevel)
+	}
 }
 
 func main() {
