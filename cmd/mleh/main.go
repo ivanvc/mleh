@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"io/ioutil"
 	"os"
@@ -83,7 +84,18 @@ func main() {
 		ti.Values[key] = value
 	}
 
-	tpl := template.Must(template.New("base").Funcs(sprig.TxtFuncMap()).ParseGlob(filepath.Join(inputDir, "templates/*")))
+	t := template.New("base")
+	funcMap := map[string]interface{}{
+		"include": func(name string, data interface{}) (string, error) {
+			buf := bytes.NewBuffer(nil)
+			if err := t.ExecuteTemplate(buf, name, data); err != nil {
+				return "", err
+			}
+			return buf.String(), nil
+		},
+	}
+
+	tpl := template.Must(t.Funcs(sprig.TxtFuncMap()).Funcs(funcMap).ParseGlob(filepath.Join(inputDir, "templates/*")))
 
 	if *dryMode {
 		log.Println("Dry mode, skipping creating directory ", *outputDir)

@@ -33,17 +33,4 @@ the documentation is hosted by
 
 ### Differences with Helm
 
-Mleh uses the default template definitions from
-[Go](https://golang.org/pkg/text/template/), so when requiring a template,
-rather than using Helm's `include` just use Go's native implementation.
-
-```
-{{- define "app.name" -}}
-{{- .Values | trunc 16 | trimSuffix "-" -}}
-{{- end -}}
-
-// Later, just call it with:
-app.name = {{ template "app.name" . }}
-```
-
-Functions `toYaml`, `toJson`, `tpl`, are neither implemented.
+Functions `toYaml`, `toJson`, `tpl`, are not implemented.
