@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"flag"
 	"io/ioutil"
 	"os"
@@ -10,6 +9,7 @@ import (
 	"text/template"
 
 	"github.com/Masterminds/sprig/v3"
+	ivanvctpl "github.com/ivanvc/tpl/pkg/template"
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v2"
 )
@@ -85,17 +85,11 @@ func main() {
 	}
 
 	t := template.New("base")
-	funcMap := map[string]interface{}{
-		"include": func(name string, data interface{}) (string, error) {
-			buf := bytes.NewBuffer(nil)
-			if err := t.ExecuteTemplate(buf, name, data); err != nil {
-				return "", err
-			}
-			return buf.String(), nil
-		},
-	}
-
-	tpl := template.Must(t.Funcs(sprig.TxtFuncMap()).Funcs(funcMap).ParseGlob(filepath.Join(inputDir, "templates/*")))
+	tpl := template.Must(
+		t.Funcs(sprig.TxtFuncMap()).
+			Funcs(ivanvctpl.IncludeFunc(t)).
+			ParseGlob(filepath.Join(inputDir, "templates/*")),
+	)
 
 	if *dryMode {
 		log.Println("Dry mode, skipping creating directory ", *outputDir)
