@@ -74,6 +74,10 @@ func main() {
 		}
 	}
 
+	if ti.Values == nil {
+		ti.Values = make(map[interface{}]interface{})
+	}
+
 	for _, v := range values {
 		var value interface{}
 		key := strings.Split(v, "=")[0]
