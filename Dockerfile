@@ -1,4 +1,4 @@
-FROM golang:1.15-alpine AS build
+FROM golang:1.21-alpine AS build
 WORKDIR /app
 COPY . /app/
 RUN go mod download && go mod verify
